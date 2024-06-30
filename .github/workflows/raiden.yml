@@ -25,11 +25,11 @@ jobs:
  
       - name: Deploy Cloud SQL
         run: |
-          gcloud sql instances create my-instance4 --region=${{ env.REGION }}
+          gcloud sql instances create my-virtualmachine --region=${{ env.REGION }}
  
       - name: Deploy Virtual Machine
         run: |
-          gcloud compute instances create my-vm4 --machine-type=n1-standard-1 --zone=${{ env.REGION }}-a
+          gcloud compute instances create my-cloudsql --machine-type=n1-standard-1 --zone=${{ env.REGION }}-a
  
       - name: Create Storage Bucket
         run: |
