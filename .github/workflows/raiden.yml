@@ -1,0 +1,40 @@
+name: Deploy Infrastructure
+ 
+on:
+  push:
+    branches:
+      - main
+ 
+jobs:
+  deploy_infrastructure:
+    runs-on: ubuntu-latest
+    env:
+      PROJECT_ID: hidden-cosmos-428006-c1  # Replace with your GCP project ID
+      REGION: us-central1  # Replace with your desired region
+ 
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+ 
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0.3.0
+        with:
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          project_id: ${{ env.PROJECT_ID }}
+          export_default_credentials: true
+ 
+      - name: Deploy Cloud SQL
+        run: |
+          gcloud sql instances create my-instance4 --region=${{ env.REGION }}
+ 
+      - name: Deploy Virtual Machine
+        run: |
+          gcloud compute instances create my-vm4 --machine-type=n1-standard-1 --zone=${{ env.REGION }}-a
+ 
+      - name: Create Storage Bucket
+        run: |
+          gsutil mb -l ${REGION} gs://raiden-shogun
+ 
+      # Add more steps as needed for other infrastructure components
+ 
+      # Optionally, add steps to validate deployment, run tests, etc.
